@@ -18,24 +18,24 @@ SVN是集中式版本控制系统，而Git则是分布式版本控制系统。
 $ git config --global user.name "Your Name"
 $ git config --global user.email "email@example.com"
 ```
-因为git是分布式版本控制系统，因此每隔机器都必须自报家门：你的名字和Email地址。
+因为git是分布式版本控制系统，因此每个机器都必须自报家门：你的名字和Email地址。
 注意`git config`命令的`--global`参数，用了这个参数，表示你这台机器上所有的Git仓库都会使用这个配置，当然也可以对某个仓库指定不同的用户名和Email地址。
 
 ## 创建版本库
-版本库又名仓库，英文名**repository**，可以简单的理解成一个目录，这个目录里面的所有文件都可以被Git管理起来，每隔文件的修改、删除，Git都能跟踪，以便任何时刻都可以跟踪历史，或者“还原”。
+版本库又名仓库，英文名**repository**，可以简单的理解成一个目录，这个目录里面的所有文件都可以被Git管理起来，每个文件的修改、删除，Git都能跟踪，以便任何时刻都可以跟踪历史，或者“还原”。
 
 1. 创建一个空目录`mygit`
-2. 在git bash下进入该目录，执行`git init`，该命令把这个目录变成Git可以管理的**仓库**。执行该命令后会发现当前目录下多了一个.git目录，这个目录是Git用来跟踪管理版本库的，不能随便去改动它。
+2. 在git bash下进入该目录，执行<font color=red>`git init`</font>，该命令把这个目录变成Git可以管理的**仓库**。执行该命令后会发现当前目录下多了一个.git目录，这个目录是Git用来跟踪管理版本库的，不能随便去改动它。
 3. **把文件添加到版本库**
 在mygit目录下添加test.txt,用notpadd++编辑一些文字在里面并保存。
 执行命令`git add test.txt`，没有任何显示，Unix的哲学是“没有消息就是好消息”。
-4. 用命令`git commit`告诉git，把文件提交到仓库。
+4. 用命令<font color=red>`git commit`</font>告诉git，把文件提交到仓库。
 ```
 $ git commit -m "add a test file"
 ```
 `-m`后面输入的是本次提交的说明，可以输入任意内容，相当于svn的日志。
 
-在windows下执行第3步时会出现<font color=red>`warning: LF will be replaced by CRLF`</font>,这是因为：windows中的换行符为 CRLF， 而在linux下的换行符为LF，解决的方法：
+在windows下执行第3步时会出现<font color=blue>`warning: LF will be replaced by CRLF`</font>,这是因为：windows中的换行符为 CRLF， 而在linux下的换行符为LF，解决的方法：
 
 ```
 $ rm -rf .git	//删除之前生成的.git
@@ -48,16 +48,15 @@ $ git add test.txt
 ```
 [windows使用git时出现：warning: LF will be replaced by CRLF](http://blog.csdn.net/unityoxb/article/details/20768687)
 
-## `git status`和`git diff`命令
-`git status`可以告诉你有没有文件被修改过
-`git diff`可以查看修改的内容：`git diff test.txt`
+## `git status`和`git diff`命令 ##
+<font color=red>`git status`</font> 可以告诉你有没有文件被修改过
+<font color=red>`git diff`</font> 可以查看修改的内容：`git diff test.txt`
 
-## 版本回退
+## 版本回退 ##
 每一次执行git commit时，git便会“保存一个快照”，这个快照在Git中被称为`commit`。
 
-###`git log`命令，查看历史记录
+###`git log`命令，查看历史记录 ##
 可以看到git的历史记录显示四个字段的信息，分别是：版本号，作者，日期和用户提交的log信息.
-
 ```
 $ git log
 commit 1f627bd6c5c06d998a8dc457b5be7ddfc54dad24
@@ -272,6 +271,196 @@ $ git merge dev		//用于合并指定分支到当前分支
 $ git branch -d dev
 ```
 
- 因为创建、合并和删除分支非常快，因此Git鼓励使用分支完成某个人物，合并后再删掉分支，这和直接在master分支上工作效果是一样的，但是过程更加安全。
+因为创建、合并和删除分支非常快，因此Git鼓励使用分支完成某个人物，合并后再删掉分支，这和直接在master分支上工作效果是一样的，但是过程更加安全。
 
 ## 解决冲突 ##
+当Git无法自动合并分支时，就必须首先解决冲突。解决冲突后，再提交，合并完成。
+用<font color=red>`git log --graph`</font>命令可以看到分支合并图。
+
+## 分支管理策略 ##
+通常，合并分支时，Git会用<font color=red>`Fast forward`</font>模式，但这种模式下，删除分支后，会丢掉分支信息。
+
+如果要强制禁用<font color=red>`Fast forward`</font>模式，Git就会在merge时生成一个新的commit，这样，从分支历史就可以看出分支信息。
+
+合并分支时，加上--no-ff参数就可以用普通模式合并，合并后的历史有分支，能看出来曾经做过合并，而fast forward合并就看不出来曾经做过合并。
+
+```
+$ git merge --no-ff -m "merge with no-ff" dev
+```
+因为本次合并要会创建一个新的commit，所以加上-m参数把描述写进去。
+
+在实际开发中，我们应该按照几个基本原则进行分支管理：
+首先：master分支应该是非常稳定的，也就是仅用来发布新版本，平时不能在上面干活。
+那在哪干活呢？干活都在dev分支上，也就是说，dev分支是不稳定的，到某个时候，比如1.0版本发布时，再把dev分支合并到master上，在master分支发布1.0版本；
+
+你和你的小伙伴们每个人都在dev分支上干活，每个人都有自己的分支，时不时地往dev分支上合并就可以了。
+团队合作的分支看起来就像是这样：
+![from liaoxuefeng.com](http://www.liaoxuefeng.com/files/attachments/001384909239390d355eb07d9d64305b6322aaf4edac1e3000/0)
+
+## bug分支 ##
+在Git中，由于分支十分的强大，每个bug都可以通过一个新的临时分支来修复，修复后合并分支并将临时分支删除。
+
+当你需要修复一个bug时，当前正在dev上进行的工作还没有提交，而且工作进行到一半，你还没法提交。
+```
+shendh@dh-PC MINGW32 /d/Git/learngit (dev)
+$ git checkout master
+error: Your local changes to the following files would be overwritten by checkout:
+        test.txt
+Please, commit your changes or stash them before you can switch branches.
+Aborting
+```
+如果此时选择切换分支，会提示上面所示的错误，因为dev分支还没有提交，如果切换分支的话会导致现在正在工作区中的dev分支的文件被覆盖，造成工作内容的丢失，因此Git是禁止用户这样操作的，而且提示中也告诉用户需要`commit`或者`stash`之后才可以切换。那么什么是`stash`呢？
+
+Git提供了`stash`功能，可以把当前工作现场“存储起来”，等以后恢复现场后继续工作。
+```
+$ git stash
+Saved working directory and index state WIP on dev: 185ff3b merge with no-ff
+HEAD is now at 185ff3b merge with no-ff
+```
+现在用`git status`查看工作区，就是干净的，也就是说可以切换分支了。比方说我们需要在master分支上修复bug，就从master分支创建临时分支，修复完成后，切换到master分支，完成合并后删除临时分支。
+我们再切回dev分支：`git checkout dev`，此时工作区是干净的，刚才的工作现场还没有恢复出来。
+使用`git stash list`命令查看保存的工作现场列表：
+```
+$ git stash list
+stash@{0}: WIP on dev: 185ff3b merge with no-ff
+```
+怎么恢复工作现场呢？
+1. 用`git stash apply`恢复，但回复后，stash内容并不删除，还需要用`git stash drop`来删除。
+2. 用`git stash pop`,恢复的同时把stash内容也删了。
+
+我们也可以恢复制定的stash，用命令
+```
+$ git stash apply stash@{0}
+```
+
+## Feature分支 ##
+应用场景：在软件开发中，总是有无穷无尽的新功能要被添加进来。
+添加一个新功能时，不希望因为一些实验性质的代码把主分支搞乱，所以，每添加一个新功能，最好新建一个feature分支。
+如果一个分支开发完后你不想将它与dev或master分支合并，而是想直接删除它怎么做呢？
+如果使用`git branch -d feature-test`命令，Git会提示销毁失败，因为此分支还没有被合并，如果删除，将丢失掉修改，如果要强行删除，需要使用命令<font color=red>`git branch -D feature-test`</font>。
+
+## 多人协作 ##
+当你从远程仓库克隆时，实际上Git自动把本地的master分支和远程的master分支对应起来了，并且，远程仓库的默认名称是origin。
+查看远程库的信息：`git remote`或`git remote -v`显示更详细信息：
+```
+$ git remote
+origin
+
+$ git remote -v
+origin  git@github.com:dhshen/learngit.git (fetch)
+origin  git@github.com:dhshen/learngit.git (push)
+
+```
+上面显示了可以抓取和推送的`origin`地址，如果没有推送权限，就看不到push地址。
+
+### 推送分支 ###
+推送分支，就是把该分支上的所有本地提交推送到远程库。
+推送时，要指定本地分支，这样，Git就会把该分支推送到远程库对应的远程分支上：
+```
+$ git push origin master
+```
+如果要推送其他分支，比如dev，则是：
+```
+$ git push origin dev
+```
+但是，并不是一定要把本地分支往远程推送，那么，哪些分支需要推送，哪些不需要呢？
+* master分支是主分支，因此要时刻与远程同步；
+
+* dev分支是开发分支，团队所有成员都需要在上面工作，所以也需要与远程同步；
+
+* bug分支只用于在本地修复bug，就没必要推到远程了，除非老板要看看你每周到底修复了几个bug；
+
+* feature分支是否推到远程，取决于你是否和你的小伙伴合作在上面开发。
+
+
+### 抓取分支 ###
+当从远程库clone时，默认情况下，只能看到本地的master分支。如果想在dev分支上开发，就必须创建远程`origin`的`dev`分支到本地：
+```
+$ git checkout -b dev origin/dev
+```
+现在就可以在dev分支上继续修改，然后把dev分支push到远程。
+
+你的小伙伴向`origin/dev`分支推送了他的提交，而碰巧你也对同样的文件做了修改，并试图推送。推送失败，因为你的小伙伴的最新提交和你试图推送的提交有冲突，解决办法也很简单，Git已经提示我们，先用git pull把最新的提交从origin/dev抓下来，然后，在本地合并，解决冲突，再推送：<font color=red>
+```
+$ git pull
+```
+</font>
+
+如果`git pull`失败，原因是没有指定本地`dev`分支与远程`origin/dev`分支的链接，根据提示设置dev和origin/dev的链接：
+```
+$ git branch --set-upstream dev origin/dev
+Branch dev set up to track remote branch dev from origin.
+```
+再pull成功，但是合并有冲突，需要手动解决冲突。解决后，提交，再push
+
+小结多人协作的工作模式：
+1. 首先，试图用`git push origin branch-name`推送自己的修改；
+2. 如果推送失败，则是因为远程分支比你的本地更新，需要先用`git pull`试图合并；
+3. 如果合并有冲突，则解决冲突，并在本地提交；
+4. 没有冲突或解决冲突后，再用`git push origin branch-name`推送就能成功！
+
+如果`git pull`提示<font color=blue>“no tracking information”</font>，则说明本地分支和远程分支的链接关系没有创建，用命令`git branch --set-upstream branch-name origin/branch-name`。
+
+# 标签管理 #
+发布一个版本时，我们通常先在版本库中打一个标签（tag），这样，就唯一确定了打标签时刻的版本。将来无论什么时候，取某个标签的版本，就是把那个打标签的时刻的历史版本取出来。所以，标签也是版本库的一个快照。
+
+Git的标签虽然是版本库的快照，但其实它就是指向某个commit的指针，所以，创建和删除标签都是瞬间完成的。
+
+Git有commit，为什么还要引入tag？
+因为commit的id号不好记啊，相反tag就是一个让人容易记住的有意义的名字，它跟某个commit绑在一起。
+
+## 创建标签 ##
+在Git中打标签非常简单，首先，切换到需要打标签的分支上，然后敲命令：<font color=red>
+```
+$ git tag <name>
+```
+</font>
+就可以打一个新的标签了，可以用命令<font color=red>`git tag`</font>查看所有标签。
+默认标签是打在最新提交的commit上的。有时候，如果忘了打标签，可以找到历史提交的commit id，然后打上就可以了：
+```
+$ git tag v1.2 6224937
+```
+还可以创建带有说明的标签，用-a指定标签名，-m指定说明文字：
+```
+$ git tag -a v1.2 -m "create v1.2 tag" 6224937
+```
+标签不是按时间顺序列出，而是按字母排序的。可以用`git show <tagname>`查看标签信息.
+
+## 操作标签 ##
+如果标签打错了，可以删除：
+```
+$ git tag -d <tagname>
+```
+因为创建的标签都只存储在本地，不会自动推送到远程。所以打错的标签可以在本地安全删除。
+
+如果要推送某个标签到远程，使用命令：
+```
+$ git push origin <tagname>
+```
+或者一次性推送全部尚未推送到远程的本地标签：
+```
+$ git push origin --tags
+```
+如果标签已经推送到远程，要删除远程标签的话，先删除本地标签，然后远程删除：
+```
+$ git tag -d <tagname> 
+$ git push origin :refs/tags/<tagname>
+```
+
+# 使用GitHub #
+# 自定义Git #
+## 忽略特殊文件 ##
+有些时候，你必须把某些文件放到Git工作目录中，但又不能提交它们，每次`git status`都会显示`Untracked files ...`
+在Git工作区的根目录下创建一个特殊的.gitignore文件，然后把要忽略的文件名填进去，Git就会自动忽略这些文件。
+```
+test.ini	//忽略test.ini文件
+*.db		//忽略所有.db后缀的文件
+dist		//忽略dist目录
+```
+<font color=red>使用Windows的童鞋注意了，如果你在资源管理器里新建一个.gitignore文件，它会提示必须输入文件名，但是在文本编辑器里“保存”或者“另存为”就可以把文件保存为.gitignore了。</font>
+
+如果你确实想添加该文件，可以用 <font color=red>`-f`</font> 强制添加到Git。
+```
+$ git add -f <filename>
+```
+`.gitignore`文件本身要放到版本库里，并且可以对`.gitignore`做版本管理
