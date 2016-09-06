@@ -1,4 +1,5 @@
 # Git的使用
+[廖雪峰的Git教程](http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000)学习笔记
 ## Git简介
 Git是分布式版本控制系统。
 SVN是集中式版本控制系统，而Git则是分布式版本控制系统。
@@ -464,3 +465,61 @@ dist		//忽略dist目录
 $ git add -f <filename>
 ```
 `.gitignore`文件本身要放到版本库里，并且可以对`.gitignore`做版本管理
+
+## 搭建Git服务器 ##
+以centos为例.参考自[csdn](http://blog.csdn.net/wave_1102/article/details/47779401)
+
+1. 首先安装Git(阿里云的centos系统可能已经自动安装好了Git)，可以使用yum在线安装：
+```
+yum install -y git
+```
+2. 创建一个git用户，专门用来运行git服务
+```
+adduser git
+```
+3. 初始化git仓库：比如我们选择/home/git/learngit.git来作为我们的git仓库。
+```
+git init --bare learngit.git
+```
+这条命令会在`/home/git/`目录下生成`learngit.git`文件夹
+4. 将`learngit.git`的owner改为git:<font color=red>
+```
+chown -R git:git learngit.git
+```
+</font>
+`-R`参数非常重要，表示此文件夹及其下属的文件都应用此权限，一开始配置的时候少加了-R，后面在提交代码的时候会报错：
+```
+$ git push -u origin master
+Counting objects: 140, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (139/139), done.
+fatal: Unable to create temporary file: Permission denied
+fatal: sha1 file '<stdout>' write error: Broken pipe
+error: failed to push some refs to 'git@ip:/home/git/learngit.git'
+```
+5. Git服务器打开RSA认证
+在Git服务器上首先需要将`/etc/ssh/sshd_config`中将RSA认证打开，即：
+```
+RSAAuthentication yes     
+PubkeyAuthentication yes     
+AuthorizedKeysFile  .ssh/authorized_keys
+```
+这里我们可以看到公钥存放在.ssh/authorized_keys文件中。所以我们在/home/git下创建.ssh目录，然后创建<font color=red>authorized_keys</font>文件。
+在github中我们需要将ssh公钥添加到SSH Key，在我们的Git服务器上我们则是把公钥放在authorized_keys文件中，一行一个。
+收集所有需要登录的用户的公钥，把所有公钥导入到/home/git/.ssh/authorized_keys文件里，一行一个。
+
+6. 禁用git用户的shell登录
+处于安全考虑，创建的git用户不允许登录shell，可以通过编辑/etc/passwd文件完成。找到类似下面的一行：
+```
+git:x:1001:1001:,,,:/home/git:/bin/bash
+```
+最后一个冒号后改为
+```
+git:x:1001:1001:,,,:/home/git:/usr/bin/git-shell
+```
+这样，git用户可以正常通过ssh使用git，但无法登录shell，因为我们为git用户指定的git-shell每次一登录就自动退出。
+
+7. Git服务器搭建完成！
+```
+$ git clone git@192.168.1.101:/home/git/learngit.git
+```
