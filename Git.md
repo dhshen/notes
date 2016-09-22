@@ -523,3 +523,68 @@ git:x:1001:1001:,,,:/home/git:/usr/bin/git-shell
 ```
 $ git clone git@192.168.1.101:/home/git/learngit.git
 ```
+
+# 补充
+一 个bare repo与普通repo的区别是没有项目文件的working copy，即repo根目录下只有专用目录，而没有任何其他代码文件和文件夹；这是为了响应作为codebase应当遵循的“Only store, never update from revisions（只存储版本，不更新到实际代码文件）”原则。
+如果一个仓库一开始是使用`git init`初始化的，那么使用如下命令可以将其转换成bare的
+```
+git config --bool core.bare true 
+```
+
+## 1.使用Git来部署线上代码
+* 在服务器端的项目目录下执行：
+```
+git init
+```
+使项目目录成为一个git目录
+
+* 使服务器端的该Git目录接受push(关键)
+```
+git config receive.denyCurrentBranch ignore
+```
+* 使服务器端每次被push时执行版本设置
+```
+# cd .git/hooks	//进入.git目录中的钩子目录
+# ls	//查看钩子目录下文件，这些都是各个钩子对应的文件示例 ( 注意，只是示例！)
+applypatch-msg.sample  post-commit.sample  post-update.sample     pre-commit.sample          pre-rebase.sample
+commit-msg.sample      post-receive.sample  pre-applypatch.sample  prepare-commit-msg.sample  update.sample
+```
+从文件名可以看出钩子被执行的时机，钩子也分为客户端的钩子和服务器端的，比如`pre-receive`和`post-receive`就属于Git服务器端(也就是接收push的一方)的钩子。
+编辑post-receive.sample文件：
+
+	```
+	#!/bin/sh
+	#
+	# An example hook script for the "post-receive" event.
+	#
+	# The "post-receive" script is run after receive-pack has accepted a pack
+	# and the repository has been updated.  It is passed arguments in through
+	# stdin in the form
+	#  <oldrev> <newrev> <refname>
+	# For example:
+	#  aa453216d1b3e49e7f6f98441fa56946ddcd6a20 68f7abf4e6f922807889f52bc043ecd31b79f814 refs/heads/master
+	#
+	# see contrib/hooks/ for a sample, or uncomment the next line and
+	# rename the file to "post-receive".
+	
+	#. /usr/share/git-core/contrib/hooks/post-receive-email
+	unset $(git rev-parse --local-env-vars)
+	cd /home/git/example
+	/usr/bin/git reset --hard HEAD
+	```
+注意最后要将 `post-receive.sample` 改名成 `post-receive` ，否则不会生效的，脚本中对这一点也有说明。
+当本地代码push到服务器上来时就会执行此钩子，将工作区的版本设置成最新的版本，从而实现代码的更新。
+最后将 post-receive 设置成可执行：
+```
+chmod a+x .git/hooks/post-receive
+```
+
+* 在本地把项目克隆下来
+```
+git clone git@xxx.xxx.com:\home\git\example
+```
+
+* 在本地修改代码后使用`git push origin master`命令将更新推送到服务器端，更新就自动部署了，这只是针对静态文件的一些设置，如果需要重启nginx服务器之类的根据需求去写钩子脚本文件。
+
+
+
