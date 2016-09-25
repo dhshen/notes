@@ -357,3 +357,108 @@ http {
 }
 
 ```
+
+## location url 匹配规则
+```
+location url [=|~|~*|^~] /uri/ {...}
+```
+= 开头表示精确匹配
+~ 开头表示uri以某个常规字符串开头，理解为匹配url路径即可
+~* 开头表示不区分大小写的正则匹配
+!~和!~* 分别为区分大小写不匹配及不区分大小写不匹配的正则
+/ 通用匹配，任何请求都会匹配到。
+
+多个location配置的情况下匹配顺序为：
+首先匹配 =，
+其次匹配 ^~,
+其次是按文件中顺序的正则匹配，
+最后是交给/通用匹配。
+当有匹配成功的时候，停止匹配，按当前匹配规则处理请求。
+
+示例：
+```
+location = / {
+	#A
+}
+
+location = /login {
+	#B
+}
+
+location ^~ /static/ {
+	#C
+}
+
+location ~ \.(gif|jpg|png|js|css)$ {
+   #D
+}
+
+location ~* \.png$ {
+   #E
+}
+
+location !~ \.xhtml$ {
+   #F
+}
+
+location !~* \.xhtml$ {
+   #G
+}
+
+location / {
+   #H
+}
+
+访问根目录/， 比如http://localhost/ 将匹配规则A
+访问 http://localhost/login 将匹配规则B，http://localhost/register 则匹配规则H
+访问 http://localhost/static/a.html 将匹配规则C
+访问 http://localhost/a.gif, http://localhost/b.jpg 将匹配规则D和规则E，但是规则D顺序优先，规则E不起作用，而 http://localhost/static/c.png 则优先匹配到规则C
+访问 http://localhost/a.PNG 则匹配规则E，而不会匹配规则D，因为规则E不区分大小写。
+访问 http://localhost/a.xhtml 不会匹配规则F和规则G，http://localhost/a.XHTML不会匹配规则G，因为不区分大小写。规则F，规则G属于排除法，符合匹配规则但是不会匹配到，所以想想看实际应用中哪里会用到。
+访问 http://localhost/category/id/1111 则最终匹配到规则H，因为以上规则都不匹配，这个时候应该是nginx转发请求给后端应用服务器，比如FastCGI（php），tomcat（jsp），nginx作为方向代理服务器存在。
+```
+### 实际应用
+1.直接匹配网站根，通过域名访问网站首页比较频繁，使用这个会加速处理，官网如是说。
+```
+location = / {
+	proxy_pass http://tomcat:8080/index
+}
+```
+
+2.处理静态文件请求，这是nginx作为http服务器的强项。此处可以选择目录匹配或后缀匹配，人选其一或搭配使用。
+```
+location ^~ /static/ {
+	root /webroot/static/;
+}
+
+location ~* \.(gif|jpg|jpeg|png|css|js|ico)$ {
+	root /webroot/res/;
+}
+
+```
+3.通用规则，用来转发动态请求到后端应用服务器。
+```
+location / {
+	proxy_pass http://tomcat:8080/
+}
+```
+以上参考自[CSDN](http://blog.csdn.net/oranyujian/article/details/42169597);
+
+## proxy_pass配置说明
+```
+1.
+location /test/ {
+	proxy_pass http://t6:8080;
+}
+
+2.
+location /test/ {
+	proxy_pass http://t6:8080/;
+}
+```
+上面两种配置，区别只在于proxy_pass转发的路径后是否带"/"
+如果访问 http://server/test/test.jsp ,则被nginx代理后，以上两种配置分别会如下反应：
+1. 请求路径会变为: `http://proxy_pass/test.jsp`
+2. 请求路径会变为: `http://proxy_pass/test/test.jsp`
+
+典型实例：同一域名下，根据根路径的不同，访问不同应用及资源。
