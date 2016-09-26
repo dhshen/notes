@@ -409,6 +409,7 @@ location / {
    #H
 }
 
+```
 访问根目录/， 比如http://localhost/ 将匹配规则A
 访问 http://localhost/login 将匹配规则B，http://localhost/register 则匹配规则H
 访问 http://localhost/static/a.html 将匹配规则C
@@ -416,7 +417,7 @@ location / {
 访问 http://localhost/a.PNG 则匹配规则E，而不会匹配规则D，因为规则E不区分大小写。
 访问 http://localhost/a.xhtml 不会匹配规则F和规则G，http://localhost/a.XHTML不会匹配规则G，因为不区分大小写。规则F，规则G属于排除法，符合匹配规则但是不会匹配到，所以想想看实际应用中哪里会用到。
 访问 http://localhost/category/id/1111 则最终匹配到规则H，因为以上规则都不匹配，这个时候应该是nginx转发请求给后端应用服务器，比如FastCGI（php），tomcat（jsp），nginx作为方向代理服务器存在。
-```
+
 ### 实际应用
 1.直接匹配网站根，通过域名访问网站首页比较频繁，使用这个会加速处理，官网如是说。
 ```
