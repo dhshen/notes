@@ -49,6 +49,7 @@ remove中如果不带参数将删除所有数据，在mongodb中是一个不可�
 
 	db.person.remove(删除的条件)
 	db.person.remove({"name":"abld"})
+	db.person.remove({});	//删除所有记录
 
 ### 其它语法 ###
 	>   $gt
@@ -76,7 +77,7 @@ remove中如果不带参数将删除所有数据，在mongodb中是一个不可�
 
 ### 聚合 ###
 	count:
-		db.person.count()
+		db.person.count()			//返回记录数
 		db.person.count({"age":5})	//条件
 
 	distinct：
