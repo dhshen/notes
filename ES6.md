@@ -26,6 +26,18 @@ let不允许在相同作用域内重复声明一个变量。
 		...
 	}
 ES6规定，函数本身的作用域在其所在的块级作用域之内。
+块级作用域的出现，实际上使广泛应用的立即执行匿名函数不再必要了
+
+	//匿名函数写法
+	(function(){
+		...	
+	})();
+	
+	//块级作用域的写法
+	{
+		let tmp = ...;
+		...	
+	}
 
 ### 2.3 const命令
 ***const命令***用来声明常量。一旦声明，其值就不能改变。这意味着const一旦声明常量，就必须立即初始化，不能留到以后赋值。
@@ -438,6 +450,33 @@ function foo( x, ...others ){
 扩展运算符是三个点(**...**)，它好比**rest参数的逆运算**，将一个数组转为用逗号分隔的参数序列。
 
 
+## Promise对象
+```
+var promise  = new Promise(function(resolve,reject){
+	$.ajax({
+		async:true,
+		url: 'http://172.24.7.15:8080/aaa/subscriber/get_subscriber.do',
+		type:'GET',
+		dataType: 'jsonp',
+		cache:false,
+		jsonpCallback:"callback_subscriber",
+		success:function(data){
+			console.log(data);
+			if(data){
+				resolve(1);
+			}else{
+				reject(2);
+			}
+		}
+	});
+});
+
+promise.then(function(value){
+	console.log(value,'ok');
+},function(value){
+	console.log(value,'failure');
+});
+```
 
 
 

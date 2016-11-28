@@ -3,7 +3,7 @@
 [网页特效](http://www.5iweb.com.cn/)
 [Swiper-移动端网站的内容触摸滑动插件](http://www.swiper.com.cn/)
 [字体图标选择网站](http://fontello.com/)
-
+[日期时间管理插件-moment.js](http://momentjs.com/)
 ***
 ### 安装
 [Linux（CentOS）下，下载安装Nginx并配置](http://blog.csdn.net/gaojinshan/article/details/37603157)
