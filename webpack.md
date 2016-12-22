@@ -179,6 +179,97 @@ module.exports = {
 ```
 现在webpack的配置已经允许你使用ES6以及JSX的语法了.不过使用react还需要安装React和React-DOM
 
+## DEMO：ES6模块化实践
+```
+//webpack.config.js
+module.exports = {
+	devtool:'eval-source-map',
+	entry:__dirname + '/js/index.js',
+	output:{
+		path: __dirname + '/dist/',
+		filename: 'index.bundle.js'
+	},
+	module:{
+		loaders:[
+			{
+				test:/\.js$/,
+				exclude:'/node_modules/',
+				loader:'babel',
+				query:{
+					presets:['es2015']
+				}
+			}
+		]
+	}
+}
+```
+
+```
+//a.js
+import B from './b'
+
+class A extends B{
+	constructor(){
+		super();
+		console.log('A init.');
+	}
+
+	sayHi(){
+		console.log('A:hi');
+	}
+}
+
+export default A;
+```
+
+```
+//b.js
+class B {
+	constructor(){
+		console.log('B init.');
+	}
+
+	printf(str){
+		console.log('B.print:'+str);
+	}
+
+}
+
+export default B;
+```
+
+```
+//index.js
+import A from './a'
+
+let obj = new A();
+obj.printf('test');
+obj.sayHi();
+
+//B init.
+//A init.
+//B.print:test
+//A:hi
+```
+
+```
+//index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>ES6-Webpack</title>
+</head>
+<body>
+	<div id="root">
+		this is a test for es6+webpack
+	</div>
+	<script src="dist/index.bundle.js"></script>
+</body>
+</html>
+```
+
+
 ## Webpack与React
 使用React需要安装React和React-DOM
 ```
@@ -202,6 +293,11 @@ class Greeter extends Component{
 }
 export default Greeter
 ```
+
+## DEMO: React
+
+
+
 
 ## CSS
 webpack提供两个工具处理样式表，css-loader 和 style-loader，二者处理的任务不同，css-loader使你能够使用类似@import 和 url(...)的方法实现 require()的功能,style-loader将所有的计算后的样式加入页面中，二者组合在一起使你能够把样式表嵌入webpack打包后的JS文件中。
