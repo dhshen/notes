@@ -198,6 +198,8 @@
 
 
 
+React的特点：React不使用HTML，而使用JSX
+
 
 
 
