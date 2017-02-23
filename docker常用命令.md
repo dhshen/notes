@@ -20,7 +20,13 @@ docker images [OPTION]
 docker rmi IMAGE [IMAGE...]
 ```
 
-4.使用Dockerfile定制镜像
+4.添加镜像标签
+
+```
+docker tag IMAGES:TAG NEWIMAGES:NEWTAG		//为本地镜像添加新的标签
+```
+
+5.使用Dockerfile定制镜像
 
 镜像的定制实际上就是定制每一层所添加的配置、文件。
 
@@ -45,7 +51,6 @@ docker run [OPTION] IMAGE [COMMAND] [ARG...]
 -d 让Docker在后台运行而不是直接把执行命令的结果输出在当前宿主机下
 --name	给这个容器取一个名字
 -w	表示命令执行的当前目录
-
 ```
 
 ```
@@ -54,7 +59,7 @@ docker run -idt -p 80:80 --name dh-nginx -v /Users/dhshen/studyspace/webServer/:
 
 2.查看容器列表
 
-```
+```bash
 docker ps [OPTIONS]
 
 Options:
@@ -151,7 +156,7 @@ $ mkdir log				//保存日志的目录
 
 6.在docker_node目录下编写应用
 
-```
+```json
 //package.json
 {
   "name": "docker_node",
