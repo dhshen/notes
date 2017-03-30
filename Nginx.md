@@ -110,7 +110,6 @@ http {
      
      }
 }
-
 ```
 负载均衡和反向代理配置
 ```
@@ -408,7 +407,6 @@ location !~* \.xhtml$ {
 location / {
    #H
 }
-
 ```
 访问根目录/， 比如http://localhost/ 将匹配规则A
 访问 http://localhost/login 将匹配规则B，http://localhost/register 则匹配规则H
@@ -463,3 +461,75 @@ location /test/ {
 2. 请求路径会变为: `http://proxy_pass/test/test.jsp`
 
 典型实例：同一域名下，根据根路径的不同，访问不同应用及资源。
+
+
+
+## Nginx重写
+
+try_files最核心的功能是可以替代rewrite。
+
+语法: try_files file ... uri 或 try_files file ... = code
+
+检查按指定顺序给出的文件是否存在，并使用第一个找到的文件响应请求。
+
+如果没找到任何文件，将重定向到最后一个参数指定的地址（此地址应该保证存在）。
+
+务必确认只有最后一个参数可以引起一个内部重定向，之前的参数只设置内部URI的指向。 最后一个参数是回退URI且必须存在，否则将会出现内部500错误。
+
+ try_files 的最后一个位置（fall back）是特殊的，它会发出一个内部 “子请求” 而非直接在文件系统里查找这个文件。
+
+注意，如果.php文件不是最后一个参数且存在，会返回该php的源码，因为只有最后一个参数才会发起子请求。
+
+
+
+
+
+## Nginx常用内置变量
+
+`$uri`
+
+请求中的当前URI(不带请求参数，参数位于$args)，可以不同于浏览器传递的$request_uri的值，它可以通过内部重定向，或者使用index指令进行修改，$uri不包含主机名，如”/foo/bar.html”
+
+`$query_string`
+
+Nginx里面$query_string 与$args相同，存储了所提交的所有$query_string；比如&p=2887&q=test
+如果想要在nginx里面单独访问这些变量。可以这样比如$p变量可以这样访问 $arg_p
+
+`$args`
+
+请求中的参数值
+
+`$request_uri`
+
+这个变量等于包含一些客户端请求参数的原始URI，它无法修改，请查看$uri更改或重写URI，不包含主机名，例如：”/cnphp/test.php?arg=freemouse”。
+
+`$server_name`
+
+服务器名，www.xxx.com
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+参考链接
+
+[Nginx配置中的 root 与 alias 指令的区别](https://foofish.net/nginx-root-different-with-alias.html)
+
+[调试 Nginx 的配置](https://segmentfault.com/a/1190000000703319)
+
+
+

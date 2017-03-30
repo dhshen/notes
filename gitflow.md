@@ -40,6 +40,20 @@
 
 
 
+## git-flow的追根溯源
+
+Github [**README**]:  [https://github.com/nvie/gitflow](https://github.com/nvie/gitflow)
+
+>A collection of Git extensions to provide high-level repository operations for Vincent Driessen's branching model
+
+git-flow就是基于 Vincent Driessen的分支模型实现的。
+
+Vincent Driessen的分支模型：[A successful Git branching model](http://nvie.com/posts/a-successful-git-branching-model/)
+
+国内关于此篇文章的翻译：[介绍一个成功的 Git 分支模型](http://www.oschina.net/translate/a-successful-git-branching-model)
+
+
+
 ## git-flow命令
 
 ### 初始化
@@ -161,7 +175,45 @@ git flow hotfix finish VERSION
 
 
 
+## 安装git-flow
 
+关于安装：[https://github.com/nvie/gitflow/wiki/Installation](https://github.com/nvie/gitflow/wiki/Installation)
+
+#### OSX
+
+```
+brew install git-flow
+```
+
+#### Centos
+
+```
+yum install gitflow
+```
+
+#### windows
+
+window的安装会麻烦一些。
+
+[git flow：安装和使用](https://my.oschina.net/xsjayz/blog/263059)
+
+
+
+## JetBrains系列软件中安装git-flow plugin
+
+以mac下的webstorm为例
+
+![step](https://ww3.sinaimg.cn/large/006tNbRwgy1fdy4stn5yxj30yi0kmq5w.jpg)
+
+![](https://ww2.sinaimg.cn/large/006tNbRwgy1fdy4tzlw35j30q00lt40l.jpg)
+
+按照上图中的步骤可以在webstorm中安装git-flow的插件。
+
+![](https://ww4.sinaimg.cn/large/006tNbRwgy1fdy4wt6h7gj30bo0773yv.jpg)
+
+安装完重启webstorm后可以看到右下角多了Gitflow的选项。
+
+安装这个插件后就不需要再输入git flow的命令了，不过git-flow总共也就那么几条命令，先熟练命令再用这个插件也许更好一点吧。
 
 
 
