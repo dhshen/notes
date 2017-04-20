@@ -523,8 +523,6 @@ Nginx里面$query_string 与$args相同，存储了所提交的所有$query_stri
 
 
 
-
-
 参考链接
 
 [Nginx配置中的 root 与 alias 指令的区别](https://foofish.net/nginx-root-different-with-alias.html)

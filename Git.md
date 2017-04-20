@@ -28,8 +28,8 @@ $ git config --global user.email "email@example.com"
 1. 创建一个空目录`mygit`
 2. 在git bash下进入该目录，执行<font color=red>`git init`</font>，该命令把这个目录变成Git可以管理的**仓库**。执行该命令后会发现当前目录下多了一个.git目录，这个目录是Git用来跟踪管理版本库的，不能随便去改动它。
 3. **把文件添加到版本库**
-在mygit目录下添加test.txt,用notpadd++编辑一些文字在里面并保存。
-执行命令`git add test.txt`，没有任何显示，Unix的哲学是“没有消息就是好消息”。
+   在mygit目录下添加test.txt,用notpadd++编辑一些文字在里面并保存。
+   执行命令`git add test.txt`，没有任何显示，Unix的哲学是“没有消息就是好消息”。
 4. 用命令<font color=red>`git commit`</font>告诉git，把文件提交到仓库。
 ```
 $ git commit -m "add a test file"
@@ -110,15 +110,15 @@ Git提供了一个命令`git reflog`用来记录你的每一次命令,当我们�
 Git和其它版本控制系统不同之处就是有暂存区的概念。
 名词解释
 * 工作区
-	就是在电脑里能看到的目录，比如上面新建的mygit文件夹就是一个工作区。
+ 就是在电脑里能看到的目录，比如上面新建的mygit文件夹就是一个工作区。
 * 版本库
-	工作区有一个隐藏的目录.git，这个不算工作区，而是Git的版本库。
-	Git的版本库里存了很多东西，其中最重要的就是称为stage或index的<font color=red>**暂存区**</font>，还有Git为我们自动创建的第一个分支master，以及指向master的HEAD指针。
+ 工作区有一个隐藏的目录.git，这个不算工作区，而是Git的版本库。
+ Git的版本库里存了很多东西，其中最重要的就是称为stage或index的<font color=red>**暂存区**</font>，还有Git为我们自动创建的第一个分支master，以及指向master的HEAD指针。
 
 前面我们把文件往Git版本库里添加的时候，是分为两步执行的：<font color=red>
 1. 用`git add`命令把文件添加进去，**实际上就是把文件修改添加到暂存区！**
 2. 用`git commit`提交更改，**实际上就是把暂存区的所有内容提交到当前分支！**
-</font>
+   </font>
 
 因为我们创建Git版本库时，Git自动为我们创建了唯一一个`master`分支，所以现在`git commit`就是往master分支上提交更改。
 你可以理解为：需要提交的文件修改通通放到暂存区，然后一次性提交暂存区的所有修改。
@@ -168,9 +168,9 @@ GitHub是一个提供Git仓库托管服务的，只要注册GitHub账号，就�
 
 由于本地Git仓库和GitHub仓库之间的传输是通过SSH加密的，因此需要一点设置：
 1. 创建SSH Key
-	执行命令 `ssh-keygen -t rsa -C "youremail@something.com"`
-	然后一路回车，通通都使用默认值即可。
-	在用户主目录里(windows下为/c/User/用户/)找到.ssh目录，里面会有id_rsa和id_rsa.pub两个文件，这两个就是SSH Key的密钥对，id_rsa是私钥，不能泄露出去，id_rsa.pub是公钥。
+ 执行命令 `ssh-keygen -t rsa -C "youremail@something.com"`
+ 然后一路回车，通通都使用默认值即可。
+ 在用户主目录里(windows下为/c/User/用户/)找到.ssh目录，里面会有id_rsa和id_rsa.pub两个文件，这两个就是SSH Key的密钥对，id_rsa是私钥，不能泄露出去，id_rsa.pub是公钥。
 2. 登陆GitHub，打开“Settings”，在“SSH and GPG keys”栏中点击“New SSH Key”，然后随便填写一个标题，将id_rsa.pub中的内容复制到Key那一栏种，然后点击“Add SSH Key”按钮添加SSH Key。
 
 为什么GitHub需要SSH Key呢？
@@ -208,6 +208,12 @@ $ git push -u origin master
 $ git push origin master
 ```
 把本地master分支的最新修改推送至GitHub。
+
+修改`git remote`
+
+```
+git remote set-url origin <git_remote_url>
+```
 
 ## 从远程库克隆 ##
 上面讲的都是先有本地库，后有远程库的时候，如何关联远程库。假设我们从零开始，那么最好的方式是先创建远程库，然后从远程库克隆。
@@ -498,7 +504,7 @@ fatal: sha1 file '<stdout>' write error: Broken pipe
 error: failed to push some refs to 'git@ip:/home/git/learngit.git'
 ```
 5. Git服务器打开RSA认证
-在Git服务器上首先需要将`/etc/ssh/sshd_config`中将RSA认证打开，即：
+   在Git服务器上首先需要将`/etc/ssh/sshd_config`中将RSA认证打开，即：
 ```
 RSAAuthentication yes     
 PubkeyAuthentication yes     
@@ -509,7 +515,7 @@ AuthorizedKeysFile  .ssh/authorized_keys
 收集所有需要登录的用户的公钥，把所有公钥导入到/home/git/.ssh/authorized_keys文件里，一行一个。
 
 6. 禁用git用户的shell登录
-处于安全考虑，创建的git用户不允许登录shell，可以通过编辑/etc/passwd文件完成。找到类似下面的一行：
+   处于安全考虑，创建的git用户不允许登录shell，可以通过编辑/etc/passwd文件完成。找到类似下面的一行：
 ```
 git:x:1001:1001:,,,:/home/git:/bin/bash
 ```
@@ -552,7 +558,7 @@ commit-msg.sample      post-receive.sample  pre-applypatch.sample  prepare-commi
 从文件名可以看出钩子被执行的时机，钩子也分为客户端的钩子和服务器端的，比如`pre-receive`和`post-receive`就属于Git服务器端(也就是接收push的一方)的钩子。
 编辑post-receive.sample文件：
 
-	```
+	​```
 	#!/bin/sh
 	#
 	# An example hook script for the "post-receive" event.
@@ -571,7 +577,7 @@ commit-msg.sample      post-receive.sample  pre-applypatch.sample  prepare-commi
 	unset $(git rev-parse --local-env-vars)
 	cd /home/git/example
 	/usr/bin/git reset --hard HEAD
-	```
+	​```
 注意最后要将 `post-receive.sample` 改名成 `post-receive` ，否则不会生效的，脚本中对这一点也有说明。
 当本地代码push到服务器上来时就会执行此钩子，将工作区的版本设置成最新的版本，从而实现代码的更新。
 最后将 post-receive 设置成可执行：
