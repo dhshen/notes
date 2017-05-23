@@ -6,40 +6,11 @@
 
 Gerrit是基于git版本控制系统构建的基于Web的代码审查和仓库管理的工具。
 
-#### Discuss code
+### 参考链接
 
+[http://lipeng1667.github.io/2017/01/17/build-gerrit-with-nginx/#](http://lipeng1667.github.io/2017/01/17/build-gerrit-with-nginx/#)
 
-
-#### Manage and serve Git repositories
-
-
-
- [参考链接](http://www.bridgeli.cn/archives/208?utm_source=tuicool)
-
-## 搭建
-
-#### 1.环境准备：
-
-Linux环境
-
-JDK
-
-Mysql
-
-nginx
-
-Git
-
-#### 2.安装包下载
-
-Gerrit官网下载页：[Download](http://gerrit-releases.storage.googleapis.com/index.html)，下载一个合适的版本，就是一个war包。
-
-
-
-```
-adduser gerrit
-passwd --delete gerrit
-```
+[http://lipeng1667.github.io/2017/01/18/gerrit-guide/](http://lipeng1667.github.io/2017/01/18/gerrit-guide/)
 
 
 
