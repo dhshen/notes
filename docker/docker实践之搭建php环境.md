@@ -66,13 +66,13 @@
 4. 提交镜像
 
    ```
-   docker commit 386e dhshen/php-nginx
+   docker commit 386e dhshen/php_env
    ```
 
 5. 将镜像push到dockerhub
 
    ```
-   docker push dhshen/php-nginx
+   docker push dhshen/php_env
    ```
 
 6. 使用镜像运行容器
@@ -91,6 +91,14 @@
    ```
 
    环境搭建完成。
+
+
+
+
+### 其它
+
+
+
 
 
 
